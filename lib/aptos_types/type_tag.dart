@@ -1,8 +1,6 @@
-
 import 'package:aptos/aptos.dart';
 
 abstract class TypeTag with Serializable {
-
   @override
   void serialize(Serializer serializer);
 
@@ -38,7 +36,6 @@ abstract class TypeTag with Serializable {
 }
 
 class TypeTagBool extends TypeTag {
-
   @override
   void serialize(Serializer serializer) {
     serializer.serializeU32AsUleb128(0);
@@ -50,7 +47,6 @@ class TypeTagBool extends TypeTag {
 }
 
 class TypeTagU8 extends TypeTag {
-
   @override
   void serialize(Serializer serializer) {
     serializer.serializeU32AsUleb128(1);
@@ -62,7 +58,6 @@ class TypeTagU8 extends TypeTag {
 }
 
 class TypeTagU16 extends TypeTag {
-
   @override
   void serialize(Serializer serializer) {
     serializer.serializeU32AsUleb128(8);
@@ -74,7 +69,6 @@ class TypeTagU16 extends TypeTag {
 }
 
 class TypeTagU32 extends TypeTag {
-
   @override
   void serialize(Serializer serializer) {
     serializer.serializeU32AsUleb128(9);
@@ -86,7 +80,6 @@ class TypeTagU32 extends TypeTag {
 }
 
 class TypeTagU64 extends TypeTag {
-
   @override
   void serialize(Serializer serializer) {
     serializer.serializeU32AsUleb128(2);
@@ -98,7 +91,6 @@ class TypeTagU64 extends TypeTag {
 }
 
 class TypeTagU128 extends TypeTag {
-
   @override
   void serialize(Serializer serializer) {
     serializer.serializeU32AsUleb128(3);
@@ -110,7 +102,6 @@ class TypeTagU128 extends TypeTag {
 }
 
 class TypeTagU256 extends TypeTag {
-
   @override
   void serialize(Serializer serializer) {
     serializer.serializeU32AsUleb128(10);
@@ -122,7 +113,6 @@ class TypeTagU256 extends TypeTag {
 }
 
 class TypeTagAddress extends TypeTag {
-
   @override
   void serialize(Serializer serializer) {
     serializer.serializeU32AsUleb128(4);
@@ -134,7 +124,6 @@ class TypeTagAddress extends TypeTag {
 }
 
 class TypeTagSigner extends TypeTag {
-
   @override
   void serialize(Serializer serializer) {
     serializer.serializeU32AsUleb128(5);
@@ -146,7 +135,7 @@ class TypeTagSigner extends TypeTag {
 }
 
 class TypeTagVector extends TypeTag {
-  TypeTagVector(this.value): super();
+  TypeTagVector(this.value) : super();
 
   final TypeTag value;
 
@@ -163,7 +152,7 @@ class TypeTagVector extends TypeTag {
 }
 
 class TypeTagStruct extends TypeTag {
-  TypeTagStruct(this.value): super();
+  TypeTagStruct(this.value) : super();
 
   final StructTag value;
 
@@ -179,11 +168,10 @@ class TypeTagStruct extends TypeTag {
   }
 
   bool isStringTypeTag() {
-    if (
-      value.moduleName.value == "string" &&
-      value.name.value == "String" &&
-      value.address.hexAddress() == AccountAddress.fromHex("0x1").hexAddress()
-    ) {
+    if (value.moduleName.value == "string" &&
+        value.name.value == "String" &&
+        value.address.hexAddress() ==
+            AccountAddress.fromHex("0x1").hexAddress()) {
       return true;
     }
     return false;
@@ -199,7 +187,8 @@ class StructTag with Serializable {
   final List<TypeTag> typeArgs;
 
   static StructTag fromString(String structTag) {
-    final typeTagStruct = TypeTagParser(structTag).parseTypeTag() as TypeTagStruct;
+    final typeTagStruct =
+        TypeTagParser(structTag).parseTypeTag() as TypeTagStruct;
 
     return StructTag(
       typeTagStruct.value.address,
@@ -221,7 +210,8 @@ class StructTag with Serializable {
     final address = AccountAddress.deserialize(deserializer);
     final moduleName = Identifier.deserialize(deserializer);
     final name = Identifier.deserialize(deserializer);
-    final typeArgs = deserializeVector<TypeTag>(deserializer, TypeTag);
+    final typeArgs =
+        deserializeVector<TypeTag>(deserializer, TypeTag.deserialize);
     return StructTag(address, moduleName, name, typeArgs);
   }
 }
